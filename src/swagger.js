@@ -19,7 +19,11 @@ const swaggerSpec = swaggerJsdoc({
       { name: "Metadatos", description: "Información general de la API" },
       { name: "Mesas", description: "Gestión de las mesas del restaurante" },
       { name: "Platos", description: "Gestión del menú de platos del restaurante" },
-      { name: "Pedidos", description: "Gestión de pedidos y sus platos asociados" }
+      {
+        name: "Ordenes",
+        description:
+          "Equipo 1 - Core Operativo: comandas, órdenes POS y tablero de cocina"
+      }
     ],
     components: {
       securitySchemes: {

@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const indexController = require("../controllers/index.controller");
+const IndexController = require("../controllers/index.controller");
 
 const router = Router();
 
@@ -27,6 +27,6 @@ const router = Router();
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.get("/", indexController.getMetadata);
+router.get("/", IndexController.getMetadata);
 
 module.exports = router;

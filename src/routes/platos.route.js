@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const platosController = require("../controllers/platos.controller");
+const PlatosController = require("../controllers/platos.controller");
 
 const router = Router();
 
@@ -49,7 +49,7 @@ const router = Router();
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.get("/", platosController.getAll);
+router.get("/", PlatosController.getAll);
 
 /**
  * @swagger
@@ -95,7 +95,7 @@ router.get("/", platosController.getAll);
  *                   type: string
  *                   example: Plato no encontrado
  */
-router.get("/:id", platosController.getById);
+router.get("/:id", PlatosController.getById);
 
 /**
  * @swagger
@@ -179,6 +179,6 @@ router.get("/:id", platosController.getById);
  *                 error:
  *                   type: string
  */
-router.post("/", platosController.createPlatoValidators, platosController.create);
+router.post("/", PlatosController.create);
 
 module.exports = router;

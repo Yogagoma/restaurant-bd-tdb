@@ -1,57 +1,55 @@
-const { pool: postgresPool } = require("../postgres");
-const { body, validationResult } = require("express-validator");
+const MesasModel = require("../models/mesas.model");
+const { mesaIdParamSchema, createMesaSchema, formatZodErrors } = require("../schemas");
 
 class MesasController {
-  createPlatoValidators = [
-    body("capacidad")
-      .isInt({ gt: 0 })
-      .withMessage("Se debe proveer una capacidad para la mesa"),
-    body("estado")
-      .isIn(["disponible", "ocupada", "reservada", "fuera_de_servicio"])
-      .withMessage("Se debe proveer un estado para la mesa"),
-    body("ubicacion")
-      .isString()
-      .notEmpty()
-      .withMessage("Se debe proveer una ubicación para el plato")
-  ];
+  static async getAll(req, res) {
+    try {
+      const mesas = await MesasModel.getAll();
+      res.send(mesas);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "Ha ocurrido un error interno al consultar las mesas",
+        error: error.message
+      });
+    }
+  }
 
-  getAll = async (req, res) => {
-    const result = await postgresPool.query("SELECT * FROM mesa");
-    res.send(result.rows);
-  };
-
-  getById = async (req, res) => {
-    const mesaId = parseInt(req.params.id);
-    if (isNaN(mesaId)) {
+  static async getById(req, res) {
+    const parsedId = mesaIdParamSchema.safeParse(req.params.id);
+    if (!parsedId.success) {
       res.status(400).send({ message: "ID de mesa inválida" });
       return;
     }
 
-    const result = await postgresPool.query("SELECT * FROM mesa WHERE id_mesa = $1", [
-      mesaId
-    ]);
-    if (result.rows.length <= 0) {
-      res.status(404).send({ message: "Mesa no encontrada" });
-      return;
+    try {
+      const mesa = await MesasModel.getById(parsedId.data);
+      if (!mesa) {
+        res.status(404).send({ message: "Mesa no encontrada" });
+        return;
+      }
+
+      res.send(mesa);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "Ha ocurrido un error interno al consultar la mesa",
+        error: error.message
+      });
     }
+  }
 
-    res.send(result.rows[0]);
-  };
-
-  create = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+  static async create(req, res) {
+    const parsedBody = createMesaSchema.safeParse(req.body);
+    if (!parsedBody.success) {
+      return res.status(400).json({ errors: formatZodErrors(parsedBody.error) });
     }
 
     try {
-      const result = await postgresPool.query(
-        "INSERT INTO mesa (capacidad, estado, ubicacion) VALUES ($1, $2, $3) RETURNING *",
-        [req.body.capacidad, req.body.estado, req.body.ubicacion]
-      );
+      const mesa = await MesasModel.create(parsedBody.data);
       res.send({
         message: "La mesa ha sido creada satisfactoriamente",
-        data: result.rows[0]
+        data: mesa
       });
     } catch (error) {
       console.log(error);
@@ -60,7 +58,7 @@ class MesasController {
         error: error.message
       });
     }
-  };
+  }
 }
 
-module.exports = new MesasController();
+module.exports = MesasController;

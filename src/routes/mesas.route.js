@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const mesasController = require("../controllers/mesas.controller");
+const MesasController = require("../controllers/mesas.controller");
 
 const router = Router();
 
@@ -44,7 +44,7 @@ const router = Router();
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.get("/", mesasController.getAll);
+router.get("/", MesasController.getAll);
 
 /**
  * @swagger
@@ -90,7 +90,7 @@ router.get("/", mesasController.getAll);
  *                   type: string
  *                   example: Mesa no encontrada
  */
-router.get("/:id", mesasController.getById);
+router.get("/:id", MesasController.getById);
 
 /**
  * @swagger
@@ -169,6 +169,6 @@ router.get("/:id", mesasController.getById);
  *                 error:
  *                   type: string
  */
-router.post("/", mesasController.createPlatoValidators, mesasController.create);
+router.post("/", MesasController.create);
 
 module.exports = router;

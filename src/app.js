@@ -5,7 +5,7 @@ const { pool: postgresPool, pingPostgres } = require("./postgres");
 const indexRouter = require("./routes/index.route");
 const platosRouter = require("./routes/platos.route");
 const mesasRouter = require("./routes/mesas.route");
-const pedidosRouter = require("./routes/pedidos.route");
+const ordenesRouter = require("./routes/ordenes.route");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger");
 
@@ -46,10 +46,10 @@ class App {
   registerRoutes() {
     this.app
       .use("/swagger/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-      .use(route("/"), this.authorizationMiddleware, indexRouter)
+      .use(route("/ordenes"), ordenesRouter)
       .use(route("/platos"), this.authorizationMiddleware, platosRouter)
       .use(route("/mesas"), this.authorizationMiddleware, mesasRouter)
-      .use(route("/pedidos"), this.authorizationMiddleware, pedidosRouter);
+      .use(route("/"), this.authorizationMiddleware, indexRouter);
   }
 
   async bootstrap() {

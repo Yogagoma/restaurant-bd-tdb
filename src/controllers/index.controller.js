@@ -1,9 +1,9 @@
 const packageJson = require("../../package.json");
 
 class IndexController {
-  getMetadata = async (req, res) => {
+  static async getMetadata(req, res) {
     res.send({ name: packageJson.name, version: packageJson.version });
-  };
+  }
 }
 
-module.exports = new IndexController();
+module.exports = IndexController;
