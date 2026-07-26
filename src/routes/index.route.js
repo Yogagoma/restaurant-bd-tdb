@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const packageJson = require("../../package.json");
+const indexController = require("../controllers/index.controller");
 
 const router = Router();
 
@@ -27,8 +27,6 @@ const router = Router();
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.get("/", async (req, res) => {
-  res.send({ name: packageJson.name, version: packageJson.version });
-});
+router.get("/", indexController.getMetadata);
 
 module.exports = router;

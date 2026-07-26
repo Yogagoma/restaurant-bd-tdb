@@ -1,6 +1,5 @@
 const swaggerJsdoc = require("swagger-jsdoc");
 const path = require("node:path");
-const { version } = require("./app");
 
 const swaggerSpec = swaggerJsdoc({
   definition: {
