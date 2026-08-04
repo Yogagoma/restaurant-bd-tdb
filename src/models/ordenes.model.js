@@ -59,10 +59,6 @@ const SELECT_ORDEN = `
   FROM pedido
   LEFT JOIN cliente ON cliente.cedula_cliente = pedido.cedula_cliente`;
 
-/**
- * Trae los ítems de varias órdenes en una sola consulta y los agrupa por
- * número de ticket, para no caer en el patrón N+1.
- */
 async function obtenerItemsPorTicket(client, tickets) {
   if (tickets.length === 0) return new Map();
 
@@ -102,10 +98,6 @@ async function buscarOrden(client, idPedido) {
 }
 
 class OrdenesModel {
-  /**
-   * La cabecera y los ítems se leen en dos consultas, dentro de la misma
-   * transacción, para que ambas vean la misma foto de la base de datos.
-   */
   static async getAll({ estatus } = {}) {
     return withTransaction(async client => {
       let sql = SELECT_ORDEN;
@@ -135,11 +127,6 @@ class OrdenesModel {
     return withTransaction(client => buscarOrden(client, idPedido));
   }
 
-  /**
-   * Crea la orden completa (cliente, cabecera y líneas de detalle) en una sola
-   * transacción: si cualquier paso falla, el ROLLBACK deshace todo y no queda
-   * ninguna orden a medias.
-   */
   static async create({
     cliente_nombre,
     cliente_cedula,
@@ -233,14 +220,6 @@ class OrdenesModel {
     });
   }
 
-  /**
-   * Cancelar es un cambio de estado, no un DELETE: la orden debe seguir
-   * existiendo para la facturación y los reportes de los otros equipos.
-   *
-   * El SELECT usa FOR UPDATE para bloquear la fila hasta el COMMIT. Sin ese
-   * bloqueo, dos peticiones simultáneas podrían leer el estado "recibido" a la
-   * vez y ambas responder que cancelaron la orden.
-   */
   static async cancel(idPedido) {
     return withTransaction(async client => {
       const actual = await client.query(

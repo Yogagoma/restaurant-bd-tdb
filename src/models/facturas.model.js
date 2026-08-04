@@ -22,24 +22,13 @@ class FacturasModel {
 
   static async getById(numFactura) {
     return withTransaction(async client => {
-      const result = await client.query(
-        "SELECT * FROM factura WHERE num_factura = $1",
-        [numFactura]
-      );
+      const result = await client.query("SELECT * FROM factura WHERE num_factura = $1", [
+        numFactura
+      ]);
       return result.rows[0] ?? null;
     });
   }
 
-  /**
-   * Procesa el cobro de un pedido: calcula el subtotal a partir de los
-   * ítems reales en "detalle_pedido" (no se confía en un total enviado por
-   * el cliente de la API), agrega el IVA y crea el registro en "factura".
-   *
-   * Todo el proceso corre dentro de una sola transacción (withTransaction,
-   * definida en src/postgres.js). Si el pedido no existe, no tiene ítems, o
-   * ya fue facturado antes, se lanza un error y la transacción hace
-   * ROLLBACK automáticamente: no queda ninguna factura a medio crear.
-   */
   static async crear({ num_ticket, metodo_pago }) {
     return withTransaction(async client => {
       const pedidoResult = await client.query(

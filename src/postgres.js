@@ -17,16 +17,6 @@ async function pingPostgres() {
   return promise;
 }
 
-/**
- * Ejecuta el callback dentro de una transacción, sobre una conexión reservada
- * del pool. Si el callback devuelve un valor se hace COMMIT; si lanza un error
- * se hace ROLLBACK y el error se vuelve a lanzar para que lo maneje el
- * controlador. La conexión siempre se devuelve al pool.
- *
- * El callback recibe el cliente de la transacción, y TODAS sus consultas deben
- * hacerse sobre él: una consulta hecha con "pool" saldría por otra conexión y
- * quedaría fuera de la transacción.
- */
 async function withTransaction(callback) {
   const client = await pool.connect();
 
