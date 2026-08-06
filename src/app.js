@@ -8,6 +8,8 @@ const mesasRouter = require("./routes/mesas.route");
 const ordenesRouter = require("./routes/ordenes.route");
 const clientesRouter = require("./routes/clientes.route");
 const facturasRouter = require("./routes/facturas.route");
+const inventarioRouter = require("./routes/inventario.route.js");
+const reportesRouter = require("./routes/reportes.route.js");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger");
 
@@ -53,6 +55,8 @@ class App {
       .use(route("/mesas"), this.authorizationMiddleware, mesasRouter)
       .use(route("/clientes"), this.authorizationMiddleware, clientesRouter)
       .use(route("/facturas"), this.authorizationMiddleware, facturasRouter)
+      .use(route("/inventario"), this.authorizationMiddleware, inventarioRouter)
+      .use(route("/reportes"), this.authorizationMiddleware, reportesRouter)
       .use(route("/"), this.authorizationMiddleware, indexRouter);
   }
 
