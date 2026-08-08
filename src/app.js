@@ -44,6 +44,8 @@ class App {
   }
 
   registerMiddlewares() {
+    const cors = require("cors");
+    this.app.use(cors());
     this.app.use(this.loggerMiddleware).use(express.json());
   }
 
@@ -54,6 +56,7 @@ class App {
       .use(route("/platos"), this.authorizationMiddleware, platosRouter)
       .use(route("/mesas"), this.authorizationMiddleware, mesasRouter)
       .use(route("/clientes"), this.authorizationMiddleware, clientesRouter)
+      .use(route("/registro-cliente"), this.authorizationMiddleware, clientesRouter)
       .use(route("/facturas"), this.authorizationMiddleware, facturasRouter)
       .use(route("/inventario"), this.authorizationMiddleware, inventarioRouter)
       .use(route("/reportes"), this.authorizationMiddleware, reportesRouter)
