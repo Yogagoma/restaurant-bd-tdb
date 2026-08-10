@@ -11,7 +11,7 @@ services:
   # ----------------------------------------------------------------------------
   nginx:
     build:
-      context: ../Tradiciones-y-Sabores
+      context: https://github.com/teofilobetancourt/Tradiciones-y-Sabores.git#main
       dockerfile: Dockerfile
     container_name: nginx_restaurante
     restart: always
