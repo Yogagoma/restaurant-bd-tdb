@@ -6,6 +6,10 @@ const indexRouter = require("./routes/index.route");
 const platosRouter = require("./routes/platos.route");
 const mesasRouter = require("./routes/mesas.route");
 const ordenesRouter = require("./routes/ordenes.route");
+const clientesRouter = require("./routes/clientes.route");
+const facturasRouter = require("./routes/facturas.route");
+const inventarioRouter = require("./routes/inventario.route.js");
+const reportesRouter = require("./routes/reportes.route.js");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./swagger");
 
@@ -40,6 +44,8 @@ class App {
   }
 
   registerMiddlewares() {
+    const cors = require("cors");
+    this.app.use(cors());
     this.app.use(this.loggerMiddleware).use(express.json());
   }
 
@@ -49,6 +55,12 @@ class App {
       .use(route("/ordenes"), ordenesRouter)
       .use(route("/platos"), this.authorizationMiddleware, platosRouter)
       .use(route("/mesas"), this.authorizationMiddleware, mesasRouter)
+      .use(route("/clientes"), this.authorizationMiddleware, clientesRouter)
+      .use(route("/registro-cliente"), this.authorizationMiddleware, clientesRouter)
+      .use(route("/facturas"), this.authorizationMiddleware, facturasRouter)
+      .use(route("/inventario"), this.authorizationMiddleware, inventarioRouter)
+      .use(route("/proveedores"), this.authorizationMiddleware, require("./routes/proveedores.route.js"))
+      .use(route("/reportes"), this.authorizationMiddleware, reportesRouter)
       .use(route("/"), this.authorizationMiddleware, indexRouter);
   }
 
