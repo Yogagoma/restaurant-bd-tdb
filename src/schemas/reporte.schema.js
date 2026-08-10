@@ -9,4 +9,4 @@ const reportPedidosQuerySchema = z.object({
     .optional()
 });
 
-module.exports = {reportesPedidosQuerySchema};
+module.exports = {reportPedidosQuerySchema};

@@ -11,7 +11,7 @@ class ReportesModel {
           COALESCE(ROUND(AVG(tiempo_entrega_dias * 86400)), 0)::INT AS tiempo_promedio_seg,
           14.2 AS pct_cambio_pedidos,
           18.5 AS pct_cambio_ingresos
-        FROM inventario.proveedores_insumo;
+        FROM proveedores_insumo;
       `;
 
       const result = await client.query(query);
@@ -31,8 +31,8 @@ class ReportesModel {
           'proveedor' AS tipo,
           ROUND((pi.costo_unitario * pi.cantidad_pedido)::numeric, 2) AS total,
           pi.estado_envio AS "Estatus_Orden"
-        FROM inventario.proveedores_insumo pi
-        JOIN inventario.proveedores p ON pi.fk_id_proveedor = p.id_proveedor
+        FROM proveedores_insumo pi
+        JOIN proveedores p ON pi.fk_id_proveedor = p.id_proveedor
       `;
 
       const values = [];

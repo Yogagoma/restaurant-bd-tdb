@@ -58,7 +58,7 @@ EXECUTE FUNCTION alerta_stock_minimo();
 
 
 -- TRIGGER 3: PUNTO DE REORDEN AUTOMÁTICO
--- Detecta cuando un insumo llega a su punto de reorden. Busca de forma inteligente al último proveedor registrado en el historial para ese insumo y genera una nueva orden de compra en estado 'En Proceso'.
+-- Detecta cuando un insumo llega a su punto de re Busca de forma inteligente al último proveedor registrado en el historial para ese insumo y genera una nueva orden de compra en estado 'En Proceso'.
 
 CREATE OR REPLACE FUNCTION generar_reorden_automatica()
 RETURNS TRIGGER AS $$
@@ -93,7 +93,7 @@ BEGIN
             ) VALUES (
                 CURRENT_DATE, v_id_proveedor, NEW.id_insumos, 
                 v_costo_ultimo, v_cantidad_reorden, 3, 
-                'En Proceso', 'REORDEN AUTOMÁTICA: Activada por el sistema al alcanzar el punto de reorden.'
+                'En Proceso', 'REORDEN AUTOMÁTICA: Activada por el sistema al alcanzar el punto de re'
             );
             
             RAISE NOTICE 'SISTEMA: Se ha generado una sugerencia de orden de compra automática para el insumo: %', NEW.nombre_insumo;
@@ -136,18 +136,18 @@ EXECUTE FUNCTION prevenir_stock_negativo();
 
 -- TRIGGER 5: DESCUENTO DEL STOCK POR RECETAS
 -- Se encarga de descontar el stock de uno o mas insumos dependiendo de la receta que tengo un pedido
-CREATE OR REPLACE FUNCTION inventario.descontar_stock_por_receta()
+CREATE OR REPLACE FUNCTION descontar_stock_por_receta()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Validar que la orden haya cambiado a un estado de preparando, listo o entregado
     IF (NEW.estado_orden IN ('preparando', 'listo', 'entregado') AND OLD.estado_orden NOT IN ('preparando', 'listo', 'entregado')) THEN
         
         -- Actualizar el stock_actual restando (cantidad_requerida_receta * cantidad_platos_pedidos)
-        UPDATE inventario.insumos i
+        UPDATE insumos i
         SET stock_actual = i.stock_actual - (r.cantidad_requerida * d.cantidad)
-        FROM inventario.recetas r
-        JOIN orden.detalle_pedido d ON d.id_plato = r.fk_id_plato
-        WHERE d.id_pedido = NEW.id_pedido
+        FROM recetas r
+        JOIN detalle_pedido d ON d.id_plato = r.fk_id_plato
+        WHERE d.num_ticket = NEW.num_ticket
           AND i.id_insumos = r.fk_id_insumos;
 
     END IF;
@@ -155,9 +155,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_descontar_stock ON orden.pedido;
+DROP TRIGGER IF EXISTS trg_descontar_stock ON pedido;
 
 CREATE TRIGGER trg_descontar_stock
-AFTER UPDATE OF estado_orden ON orden.pedido
+AFTER UPDATE OF estado_orden ON pedido
 FOR EACH ROW
-EXECUTE FUNCTION inventario.descontar_stock_por_receta();
+EXECUTE FUNCTION descontar_stock_por_receta();

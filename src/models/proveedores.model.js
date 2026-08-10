@@ -1,42 +1,42 @@
 const { withTransaction } = require("../postgres");
 
-class InventarioModel {
+class ProveedorModel {
   static async getAll() {
     return withTransaction(async client => {
       const result = await client.query(
-        "SELECT * FROM insumos ORDER BY id_insumos ASC;"
+        "SELECT * FROM proveedores ORDER BY id_proveedor ASC;"
       );
       return result.rows;
     });
   }
 
-  static async getById(id_insumos) {
+  static async getById(id_proveedor) {
     return withTransaction(async client => {
       const query = `
-        SELECT * FROM insumos 
-        WHERE id_insumos = $1;
+        SELECT * FROM proveedores 
+        WHERE id_proveedor = $1;
       `;
-      const result = await client.query(query, [id_insumos]);
+      const result = await client.query(query, [id_proveedor]);
       return result.rows[0] ?? null;
     });
   }
 
-  static async create({nombre_insumo, stock_actual, unidad_medida, stock_minimo = 0, punto_reorden = 0, fk_id_categoria}) {
-    
+  static async create(data) {
     return withTransaction(async client => {
       const query = `
-        INSERT INTO insumos 
-        (nombre_insumo, stock_actual, unidad_medida, stock_minimo, punto_reorden, fk_id_categoria)
-        VALUES ($1, $2, $3, $4, $5, $6) 
+        INSERT INTO proveedores 
+        (nombre_empresa, identificacion_rif, ciudad, telefono_empresa, email_empresa, direccion, nombre_encargado)
+        VALUES ($1, $2, $3, $4, $5, $6, $7) 
         RETURNING *;
       `;
       const values = [
-        nombre_insumo,
-        stock_actual,
-        unidad_medida,
-        stock_minimo,
-        punto_reorden,
-        fk_id_categoria
+        data.nombre_empresa,
+        data.identificacion_rif,
+        data.ciudad,
+        data.telefono_empresa,
+        data.email_empresa,
+        data.direccion,
+        data.nombre_encargado
       ];
 
       const result = await client.query(query, values);
@@ -44,7 +44,7 @@ class InventarioModel {
     });
   }
 
-  static async update(id_insumos, fields) {
+  static async update(id_proveedor, fields) {
     return withTransaction(async client => {
       const keys = Object.keys(fields);
       if (keys.length === 0) return null;
@@ -54,28 +54,28 @@ class InventarioModel {
       const idPosition = keys.length + 1;
 
       const query = `
-        UPDATE insumos 
+        UPDATE proveedores 
         SET ${setClause} 
-        WHERE id_insumos = $${idPosition} 
+        WHERE id_proveedor = $${idPosition} 
         RETURNING *;
       `;
 
-      const result = await client.query(query, [...values, id_insumos]);
+      const result = await client.query(query, [...values, id_proveedor]);
       return result.rows[0] ?? null;
     });
   }
 
-  static async delete(id_insumos) {
+  static async delete(id_proveedor) {
     return withTransaction(async client => {
       const query = `
-        DELETE FROM insumos
-        WHERE id_insumos = $1
+        DELETE FROM proveedores
+        WHERE id_proveedor = $1
         RETURNING *;
       `;
-      const result = await client.query(query, [id_insumos]);
+      const result = await client.query(query, [id_proveedor]);
       return result.rows[0] ?? null;
     });
   }
 }
 
-module.exports = InventarioModel;
+module.exports = ProveedorModel;

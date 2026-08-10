@@ -27,17 +27,18 @@ const crearInventarioSchema = z.object({
   stock_minimo: z.coerce
     .number()
     .min(0, { message: "El stock mínimo no puede ser negativo" })
-    .default(0),
+    .optional(),
 
   punto_reorden: z.coerce
     .number()
     .min(0, { message: "El punto de reorden no puede ser negativo" })
-    .default(0),
+    .optional(),
 
-  fk_id_categoria: z.coerce
-    .number({ required_error: "Se debe vincular una categoría" })
-    .int({ message: "El ID de la categoría debe ser un entero" })
-    .positive({ message: "El ID de la categoría debe ser válido" })
+  fk_id_categoria: z
+    .union([z.null(), z.coerce.number().int().positive()], {
+      error: "Se debe vincular una categoría válida"
+    })
+    .optional()
 });
 
 // Esquema para actualización (permite campos opcionales mediante .partial())

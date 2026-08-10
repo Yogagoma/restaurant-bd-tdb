@@ -9,7 +9,7 @@ CREATE SCHEMA IF NOT EXISTS inventario;
 
 
 -- Ahora se crea la tabla "categoria"
--- Se encarga de clasificar los productos o ingredientes disponibles en el inventario.
+-- Se encarga de clasificar los productos o ingredientes disponibles en el 
 -- Llave primaria de la tabla "id_categoria", acepta un entero grande autoincremental
 -- Atributo "nombre_categoria" donde se debe indicar el nombre de la clasificación con una longitud máxima de 100 caracteres no nulos, debe ser única
 
@@ -106,7 +106,7 @@ CREATE TABLE proveedores_insumo(
 -- El atributo fk_id_insumos es una llave foranea y hace referencia al id_insumos de la tabla insumos
 -- El atributo fk_id_producto es una llave foranea que hace referencia al id_producto de la tabla producto del equipo 1,
 -- esto con el proposito que el trigger de descuento del inventario funcione bien
-CREATE TABLE IF NOT EXISTS inventario.recetas (
+CREATE TABLE IF NOT EXISTS recetas (
     id_receta BIGSERIAL PRIMARY KEY,
     fk_id_plato BIGINT NOT NULL,      
     fk_id_insumos BIGINT NOT NULL,       
@@ -114,6 +114,6 @@ CREATE TABLE IF NOT EXISTS inventario.recetas (
 
     CONSTRAINT fk_receta_insumo 
         FOREIGN KEY (fk_id_insumos) 
-        REFERENCES inventario.insumos(id_insumos) 
+        REFERENCES insumos(id_insumos) 
         ON DELETE CASCADE
 );
