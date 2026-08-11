@@ -12,6 +12,9 @@ services:
     build:
       context: https://github.com/nelrondon/Tradiciones-y-Sabores.git#main
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ""
+        VITE_API_KEY: ${API_KEY}
     container_name: frontend_restaurante
     restart: always
     ports:
@@ -30,11 +33,11 @@ services:
     container_name: db_restaurante
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-admin_tradicion_sabor}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cambia_esta_contrasena_segura_123!}
-      POSTGRES_DB: ${POSTGRES_DB:-tradicion_y_sabor_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-tradiciones_sabores_db}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_v4:/var/lib/postgresql/data
       # Montamos la carpeta local 'sql' para inicializar las tablas
       - ./sql:/docker-entrypoint-initdb.d:ro
     healthcheck:
@@ -59,8 +62,8 @@ services:
     environment:
       PORT: ${PORT:-3000}
       API_KEY: ${API_KEY:-tu_clave_api_secreta}
-      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-admin_tradicion_sabor}:${POSTGRES_PASSWORD:-cambia_esta_contrasena_segura_123!}@db_restaurante:5432/${POSTGRES_DB:-tradicion_y_sabor_db}}
-      POSTGRES_URL: ${POSTGRES_URL:-postgresql://${POSTGRES_USER:-admin_tradicion_sabor}:${POSTGRES_PASSWORD:-cambia_esta_contrasena_segura_123!}@db_restaurante:5432/${POSTGRES_DB:-tradicion_y_sabor_db}}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db_restaurante:5432/${POSTGRES_DB:-tradiciones_sabores_db}}
+      POSTGRES_URL: ${POSTGRES_URL:-postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db_restaurante:5432/${POSTGRES_DB:-tradiciones_sabores_db}}
     depends_on:
       db_restaurante:
         condition: service_healthy
@@ -88,7 +91,7 @@ services:
       - red-restaurante
 
 volumes:
-  postgres_data:
+  postgres_data_v4:
     driver: local
   n8n_data:
     driver: local
