@@ -7,20 +7,37 @@ version: '3.8'
 services:
 
   # ----------------------------------------------------------------------------
-  # 1. FRONTEND Y NGINX (PROXY INVERSO Y CIFRADO SSL/HTTPS)
+  # 1. FRONTEND: Servidor web privado (React/Vite)
   # ----------------------------------------------------------------------------
-  nginx:
+  frontend:
     build:
       context: https://github.com/teofilobetancourt/Tradiciones-y-Sabores.git#main
       dockerfile: Dockerfile
-    container_name: nginx_restaurante
+    container_name: frontend_restaurante
     restart: always
-    ports:
-      - "80:80"     # HTTP -> Redirección a HTTPS (443)
-      - "443:443"   # HTTPS -> Tráfico Cifrado
+    # Eliminamos puertos públicos. Solo accesible por la red interna de Docker.
     depends_on:
       - backend
       - n8n
+    networks:
+      - red-restaurante
+
+  # ----------------------------------------------------------------------------
+  # 1.5. NGINX PROXY MANAGER (NPM): Interfaz de Administración Web y Proxy Público
+  # ----------------------------------------------------------------------------
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: npm_restaurante
+    restart: unless-stopped
+    ports:
+      - '80:80'      # Tráfico HTTP
+      - '81:81'      # Interfaz web de administración NPM
+      - '443:443'    # Tráfico HTTPS
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    depends_on:
+      - frontend
     networks:
       - red-restaurante
 
@@ -93,6 +110,10 @@ volumes:
   postgres_data:
     driver: local
   n8n_data:
+    driver: local
+  npm_data:
+    driver: local
+  npm_letsencrypt:
     driver: local
 
 networks:
