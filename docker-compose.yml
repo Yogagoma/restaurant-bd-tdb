@@ -1,11 +1,10 @@
-version: '3.8'
+version: "3.8"
 
 # ==============================================================================
 # ORQUESTACIÓN COMPLETA CON DOCKER COMPOSE - RESTAURANTE "TRADICIÓN Y SABOR"
 # ==============================================================================
 
 services:
-
   # ----------------------------------------------------------------------------
   # 1. FRONTEND: Servidor web privado (React/Vite)
   # ----------------------------------------------------------------------------
@@ -16,7 +15,7 @@ services:
     container_name: frontend_restaurante
     restart: always
     ports:
-      - "8080:80"    # Puerto 8080 expuesto para acceso directo al frontend
+      - "8080:80" # Puerto 8080 expuesto para acceso directo al frontend
     depends_on:
       - backend
       - n8n
@@ -27,13 +26,13 @@ services:
   # 1.5. NGINX PROXY MANAGER (NPM): Interfaz de Administración Web y Proxy Público
   # ----------------------------------------------------------------------------
   npm:
-    image: 'jc21/nginx-proxy-manager:latest'
+    image: "jc21/nginx-proxy-manager:latest"
     container_name: npm_restaurante
     restart: unless-stopped
     ports:
-      - '80:80'      # Tráfico HTTP
-      - '81:81'      # Interfaz web de administración NPM
-      - '443:443'    # Tráfico HTTPS
+      - "80:80" # Tráfico HTTP
+      - "81:81" # Interfaz web de administración NPM
+      - "443:443" # Tráfico HTTPS
     volumes:
       - npm_data:/data
       - npm_letsencrypt:/etc/letsencrypt
