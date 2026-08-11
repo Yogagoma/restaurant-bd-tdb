@@ -11,7 +11,7 @@ services:
   # ----------------------------------------------------------------------------
   frontend:
     build:
-      context: https://github.com/teofilobetancourt/Tradiciones-y-Sabores.git#main
+      context: https://github.com/nelrondon/Tradiciones-y-Sabores.git#main
       dockerfile: Dockerfile
     container_name: frontend_restaurante
     restart: always
