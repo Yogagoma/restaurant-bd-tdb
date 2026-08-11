@@ -15,7 +15,8 @@ services:
       dockerfile: Dockerfile
     container_name: frontend_restaurante
     restart: always
-    # Eliminamos puertos públicos. Solo accesible por la red interna de Docker.
+    ports:
+      - "8080:80"    # Puerto 8080 expuesto para acceso directo al frontend
     depends_on:
       - backend
       - n8n
